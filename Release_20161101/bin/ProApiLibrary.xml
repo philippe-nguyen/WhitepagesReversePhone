@@ -1,0 +1,1112 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ProApiLibrary</name>
+    </assembly>
+    <members>
+        <member name="T:ProApiLibrary.Api.Clients.BusinessProxy">
+            <summary>
+            Strongly typed <seealso cref="T:ProApiLibrary.Data.Entities.EntityProxy"/> for <seealso cref="T:ProApiLibrary.Data.Entities.IBusiness"/> entities
+            </summary>
+            <remarks>
+            <seealso cref="T:ProApiLibrary.Data.Entities.EntityProxy"/>
+            <seealso cref="T:ProApiLibrary.Data.Entities.IBusiness"/>
+            <seealso cref="T:ProApiLibrary.Data.Entities.IEntity"/>
+            </remarks>
+        </member>
+        <member name="T:ProApiLibrary.Data.Entities.EntityProxy">
+            <summary>
+            Abstract base class representing any of the proxy classes
+            </summary>
+            <remarks>
+            <p>The complete entity graph, traversed to its full extent, would
+            be incredibly large, thus, in practice, only a subset of this graph
+            is presented in the Response.
+            As a result, in some cases you may encounter associations whose nodes
+            are not available to you. When this occurs, an appropriate <seealso cref="T:ProApiLibrary.Data.Entities.EntityProxy"/>
+            instance is put into its place. To test if an entity is a proxy, use
+            the this.IsProxy accessor.</p>
+            
+            <p>Entity proxies satisfy the appropriate entity interface, returning
+            null for all the values -- acting as if the values were masked
+            from you. The exception to this rule is the ID of the associated entity,
+            which is always present on a proxy value.</p>
+            
+            <p>To load an entity, call the this.Load() method. <em>This method
+            will make a call to the remote service</em>, fetching information for
+            the associated entity ID. To test if a value has been loaded, the
+            this.IsLoaded accessor may be used.</p>
+            
+            see IsProxy
+            see IsLoaded
+            see Load()
+            <seealso cref="T:ProApiLibrary.Data.Entities.IEntity"/>
+            </remarks>
+        </member>
+        <member name="T:ProApiLibrary.Data.Entities.IEntity">
+            <summary>
+            The root interface for all Entities
+            </summary>
+            <remarks>
+            (e.g. <seealso cref="T:ProApiLibrary.Data.Entities.IPerson"/>, <seealso cref="T:ProApiLibrary.Data.Entities.IBusiness"/>, <seealso cref="T:ProApiLibrary.Data.Entities.IPhone"/>, and <seealso cref="T:ProApiLibrary.Data.Entities.Location"/>).
+            
+            <p>The Whitepages API presents its data in a directed graph form, whereby:</p>
+            <ul>
+                <li>Each node is an <seealso cref="T:ProApiLibrary.Data.Entities.IEntity"/>, and</li>
+                <li>each Edge is an <seealso cref="T:ProApiLibrary.Data.Associations.Association"/>.</li>
+            </ul>
+            
+            Entities contain data intrinsic to the entity, whereas associations
+            contain data pertaining to the relationship between its source and destination
+            entities
+            
+            <h2>Properties</h2>
+            
+            <p>Entity properties are optionally filled in; factors include
+            the query type and the API Key configuration. When a value is not
+            available, its accessor is filled in with a {@code null} value,
+            therefore it is a good idea to check the nullness of property
+            values before using them.</p>
+            
+            <h2>Traversal</h2>
+            
+            <p>There are two ways to traverse the graph:</p>
+            <ol>
+                <li>Explicit traversal through the association, and</li>
+                <li>Direct traversal to the associated entity.</li>
+            </ol>
+            <p>The former is useful when information on the association is desired;
+            however, one is often interested only in the associated entity itself,
+            in which case direct traversal is clearer.</p>
+            
+            <p>For example, the following two lines have the same effect:</p>
+            <pre>
+            {@code
+            Person p1 = phone.getPersonAssociations().get(0).getPerson();
+            Person p2 = phone.getPeople().get(0);
+            p1 == p2 //is true
+            }
+            </pre>
+            <p>Careful readers of the above example will note that extra safety code is needed
+            to check that the returned lists are non-null and non-empty before
+            calling {@code get()}.</p>
+            
+            <h2>Proxies</h2>
+            
+            <p>The complete entity graph, traversed to its full extent, would
+            be incredibly large, thus, in practice, only a subset of this graph
+            is presented in the Response.
+            As a result, in some cases you may encounter associations whose nodes
+            are not available to you. When this occurs, an appropriate <seealso cref="T:ProApiLibrary.Data.Entities.EntityProxy"/>
+            instance is put into its place. To test if an entity is a proxy, use
+            the this.IsProxy accessor.</p>
+            
+            <p>Entity proxies satisfy the appropriate entity interface, returning
+            null for all the values -- acting as if the values were masked
+            from you. The exception to this rule is the ID of the associated entity,
+            which is always present on a proxy value.</p>
+            
+            <p>To load an entity, call the this.Load() method. <em>This method
+            will make a call to the remote service</em>, fetching information for
+            the associated entity ID. To test if a value has been loaded, the
+            this.IsLoaded() method may be used.</p>
+            
+            <seealso cref="T:ProApiLibrary.Data.Entities.IPerson"/>
+            <seealso cref="T:ProApiLibrary.Data.Entities.IBusiness"/>
+            <seealso cref="T:ProApiLibrary.Data.Entities.IPhone"/>
+            <seealso cref="T:ProApiLibrary.Data.Entities.Location"/>
+            <seealso cref="T:ProApiLibrary.Data.Associations.Association"/>
+            <seealso cref="T:ProApiLibrary.Data.Entities.EntityProxy"/>
+            </remarks>
+        </member>
+        <member name="M:ProApiLibrary.Data.Entities.IEntity.Load">
+            <summary>
+            Causes this instance to load its data by contacting
+            the remote service and requesting information.
+            </summary>
+            <remarks>
+            Once loaded, subsequent calls to this method have
+            no effect.
+            
+            This method is useful for proxy entities found
+            at the edge of the graph
+            
+            see this.IsProxy
+            see this.IsLoaded
+            <seealso cref="T:ProApiLibrary.Data.Entities.EntityProxy"/>
+            </remarks>
+        </member>
+        <member name="P:ProApiLibrary.Data.Entities.IEntity.Id">
+            <summary>
+            The EntityId associated with this entity
+            </summary>
+        </member>
+        <member name="P:ProApiLibrary.Data.Entities.IEntity.Name">
+            <summary>
+            A standardized method for getting the primary, human readable, formatted 
+            string version of this entity.
+            </summary>
+            <returns>The human formatted string.</returns>
+        </member>
+        <member name="P:ProApiLibrary.Data.Entities.IEntity.Associations">
+            <summary>
+            A convenience method for getting the concatenation of the association lists.
+            </summary>
+            <returns>A concatenated list of all associations</returns>
+        </member>
+        <member name="P:ProApiLibrary.Data.Entities.IEntity.Entities">
+            <summary>
+            A convenience method for getting the concatenation of the entity lists.
+            </summary>
+            <returns>A concatenated list of all entities associated with this entity</returns>
+        </member>
+        <member name="P:ProApiLibrary.Data.Entities.IEntity.IsProxy">
+            <summary>
+            Returns true if this entity instance is a proxy instance.
+            </summary>
+            <remarks>
+            see this.IsLoaded
+            see this.Load()
+            <seealso cref="T:ProApiLibrary.Data.Entities.EntityProxy"/>
+            </remarks>
+            <returns>true if this entity instance is a proxy instance</returns>
+        </member>
+        <member name="P:ProApiLibrary.Data.Entities.IEntity.IsLoaded">
+            <summary>
+            If the called on a proxy, return true only
+            if the backing entity has been fetched. If called
+            on a concrete entity, then always return true.
+            see this.IsProxy
+            see this.Load()
+            <seealso cref="T:ProApiLibrary.Data.Entities.EntityProxy"/>
+            </summary>
+            <returns>load status for this entity</returns>
+        </member>
+        <member name="T:ProApiLibrary.Data.Entities.IBusiness">
+            <summary>
+            The interface for Business <seealso cref="T:ProApiLibrary.Data.Entities.IEntity"/> classes
+            <seealso cref="T:ProApiLibrary.Data.Entities.IEntity"/>
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Data.Entities.ILegalEntity">
+            <summary>
+            /// <p>A common interface for <seealso cref="T:ProApiLibrary.Data.Entities.IPerson"/> and <seealso cref="T:ProApiLibrary.Data.Entities.IBusiness"/>
+            <seealso cref="T:ProApiLibrary.Data.Entities.IEntity"/> instances.</p>
+            </summary>
+            <remarks>
+            <p>This interface exists for the purposes of typing for Liskov
+            substitution.</p>
+            </remarks>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.Client">
+             <summary>
+             The Client class is the starting point for interaction with the Whitepages
+             API, serving as the starting place for making requests and getting results.
+             </summary>
+             <remarks>
+             <![CDATA[
+             <p>The key steps for use of the Client are:</p>
+            
+             <ol>
+                <li>Instantiation of a Client,</li>
+                <li>Creation of a <seealso cref="IQuery"/>, and</li>
+                <li>Execution of the Query via the find methods on the Client.</li>
+             </ol>
+            
+             <example>For example:
+             <code>
+             {
+            		Client client = new Client("yourapikey");
+            
+            		PersonQuery personQuery = new PersonQuery("Rory", null, "Williams");
+            		Response<Person> = client.findPeople(personQuery);
+            
+            		List<Person> results = Response.getResults();
+            		for( Person p : results ) {
+            			System.out.println(p.getBestName());
+            		}
+             }
+             </code>
+             </example>
+             
+             <p>In production applications, it is typically preferable to instantiate a single
+             Client instance per thread, repeatedly using it for sequential requests to the API.</p>
+            
+             ]]>
+             
+             <seealso cref="P:ProApiLibrary.Api.Clients.Client.Config"/>
+             <seealso cref="T:ProApiLibrary.Api.Queries.IQuery"/>
+             <seealso cref="T:ProApiLibrary.Api.Responses.Response`1"/>
+             </remarks>
+        </member>
+        <member name="M:ProApiLibrary.Api.Clients.Client.#ctor(System.String)">
+            <summary>
+            Creates a Client instance configured with the given API Key.
+            </summary>
+            <remarks>
+            <seealso cref="P:ProApiLibrary.Api.Clients.Client.Config"/>
+            </remarks>
+            <param name="apiKey">Your Whitepages API key</param>
+        </member>
+        <member name="M:ProApiLibrary.Api.Clients.Client.#ctor(ProApiLibrary.Api.Clients.Config)">
+            <summary>
+            Creates a Client instance with the given Config instance.
+            </summary>
+            <remarks>
+            <p>The Config instance is not duplicated, so alterations to it will
+            affect all Client instances using it.</p>
+            </remarks>
+            <param name="config">The configuration instance to use</param>
+        </member>
+        <member name="M:ProApiLibrary.Api.Clients.Client.#ctor(ProApiLibrary.Api.Clients.Config,ProApiLibrary.Api.Clients.IResultFinder{ProApiLibrary.Data.Entities.IPerson,ProApiLibrary.Api.Queries.PersonQuery},ProApiLibrary.Api.Clients.IResultFinder{ProApiLibrary.Data.Entities.IBusiness,ProApiLibrary.Api.Queries.BusinessQuery},ProApiLibrary.Api.Clients.IResultFinder{ProApiLibrary.Data.Entities.IPhone,ProApiLibrary.Api.Queries.PhoneQuery},ProApiLibrary.Api.Clients.IResultFinder{ProApiLibrary.Data.Entities.ILocation,ProApiLibrary.Api.Queries.LocationQuery})">
+             <summary>
+             Creates a Client instance with the given Config and ResultFinder instances.
+             </summary>
+             <remarks>
+             Normally, one should use the default ResultFinders, however there are
+             advanced cases where alternative ResultFinders may be useful, such
+             as with custom response parsers or stubbed finders for testing.
+             </remarks>
+            
+             <param name="config">The configuration instance</param>
+             <param name="personResultFinder">The ResultFinder used for FindPeople() lookups</param>
+             <param name="businessResultFinder">The ResultFinder used for FindBusinesses() lookups</param>
+             <param name="phoneResultFinder">The ResultFinder used for FindPhones() lookups</param>
+             <param name="locationResultFinder">The ResultFinder used for FindLocations() lookups</param>
+        </member>
+        <member name="M:ProApiLibrary.Api.Clients.Client.FindPeople(ProApiLibrary.Api.Queries.PersonQuery)">
+            <summary>
+            Executes the given query and returns the response.
+            </summary>
+            <param name="query">The query to perform</param>
+            <returns>The response object</returns>
+        </member>
+        <member name="M:ProApiLibrary.Api.Clients.Client.FindBusinesses(ProApiLibrary.Api.Queries.BusinessQuery)">
+            <summary>
+            Executes the given query and returns the response.
+            </summary>
+            <param name="query">The query to perform</param>
+            <returns>The response object</returns>
+        </member>
+        <member name="M:ProApiLibrary.Api.Clients.Client.FindPhones(ProApiLibrary.Api.Queries.PhoneQuery)">
+            <summary>
+            Executes the given query and returns the response.
+            </summary>
+            <param name="query">The query to perform</param>
+            <returns>The response object</returns>
+        </member>
+        <member name="M:ProApiLibrary.Api.Clients.Client.FindLocations(ProApiLibrary.Api.Queries.LocationQuery)">
+            <summary>
+            Executes the given query and returns the response.
+            </summary>
+            <param name="query">The query to perform</param>
+            <returns>The response object</returns>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.Config">
+            <summary>
+            The configuration data class. 
+            </summary>
+            <remarks>
+            <p>In most use cases, appropriate instantiation of the <seealso cref="T:ProApiLibrary.Api.Clients.Client"/> will create an
+            appropriate configuration. However in some advanced use cases, one or more custom
+            configurations may be created and configured appropriately.</p>
+            
+            <p>There are several supported idioms for usage of custom configurations, in
+            order to provide maximum flexibility to our clients. They are:</p>
+            <ul>
+                <li>Create a new configuration instance for each client, or</li>
+                <li>Create a single configuration instance to share beteween many clients.</li>
+            </ul>
+            </remarks>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.Exceptions.ResponseDecoderException">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.LocationProxy">
+            <summary>
+            Strongly typed <seealso cref="T:ProApiLibrary.Data.Entities.EntityProxy"/> for <seealso cref="T:ProApiLibrary.Data.Entities.Location"/> entities
+            </summary>
+            <remarks>
+            <seealso cref="T:ProApiLibrary.Data.Entities.EntityProxy"/>
+            <seealso cref="T:ProApiLibrary.Data.Entities.Location"/>
+            <seealso cref="T:ProApiLibrary.Data.Entities.IEntity"/>
+            </remarks>
+        </member>
+        <member name="T:ProApiLibrary.Data.Entities.ILocation">
+            <summary>
+            The interface for Location <seealso cref="T:ProApiLibrary.Data.Entities.IEntity"/> classes
+            </summary>
+            <remarks>
+            <seealso cref="T:ProApiLibrary.Data.Entities.IEntity"/>
+            </remarks>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.PhoneProxy">
+            <summary>
+            Strongly typed <seealso cref="T:ProApiLibrary.Data.Entities.EntityProxy"/> for <seealso cref="T:ProApiLibrary.Data.Entities.IPhone"/> entities
+            </summary>
+            <remarks>
+            <seealso cref="T:ProApiLibrary.Data.Entities.EntityProxy"/>
+            <seealso cref="T:ProApiLibrary.Data.Entities.IPhone"/>
+            <seealso cref="T:ProApiLibrary.Data.Entities.IEntity"/>
+            </remarks>
+        </member>
+        <member name="T:ProApiLibrary.Data.Entities.IPhone">
+            <summary>
+            The interface for Phone <seealso cref="T:ProApiLibrary.Data.Entities.IEntity"/> classes
+            </summary>
+            <remarks>
+            <seealso cref="T:ProApiLibrary.Data.Entities.IEntity"/>
+            </remarks>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.PersonProxy">
+            <summary>
+            Strongly typed <seealso cref="T:ProApiLibrary.Data.Entities.EntityProxy"/> for <seealso cref="T:ProApiLibrary.Data.Entities.IPerson"/> entities
+            </summary>
+            <remarks>
+            <seealso cref="T:ProApiLibrary.Data.Entities.EntityProxy"/>
+            <seealso cref="T:ProApiLibrary.Data.Entities.IPerson"/>
+            <seealso cref="T:ProApiLibrary.Data.Entities.IEntity"/>
+            </remarks>
+        </member>
+        <member name="T:ProApiLibrary.Data.Entities.IPerson">
+            <summary>
+            The interface for Person <seealso cref="T:ProApiLibrary.Data.Entities.IEntity"/> classes
+            </summary>
+            <remarks>
+            <seealso cref="T:ProApiLibrary.Data.Entities.IEntity"/>
+            </remarks>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.DataSources.HttpDataSource">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.IDataSource`2">
+            <summary>
+            Data sources act as brokers of information, fetching a response of one
+            type, using a request of another type. For example, a data source may
+            take a URI instance, call the associated external web service, and return
+            an InputStream containing the response body.
+            </summary>
+            <remarks>
+            <p>DataSource is part of the ResultFinder pipeline.
+             <seealso cref="T:ProApiLibrary.Api.Clients.IResultFinder`2"/> instances link
+             together the dataflow of the conversion of a
+             <seealso cref="T:ProApiLibrary.Api.Queries.IQuery"/> to a
+             <seealso cref="T:ProApiLibrary.Api.Responses.Response`1"/></p>
+             <ol>
+                 <li>The <seealso cref="T:ProApiLibrary.Api.Queries.IQuery"/> is transformed to an intermediate form via a <seealso cref="!:IQueryEncoder"/>,</li>
+                 <li>The intermediate form is used to fetch the raw response from the data source via a <seealso cref="!:IDataSource"/>, and</li>
+                 <li>The raw response is transformed into a normalized <seealso cref="T:ProApiLibrary.Api.Responses.Response`1"/> via a <seealso cref="!:IResponseDecoder"/></li>
+             </ol>
+            
+             <seealso cref="!:IResultFinder"/>
+             <seealso cref="!:ResultFinder"/>
+             <seealso cref="!:IQueryEncoder"/>
+             <seealso cref="!:IDataSource"/>
+             <seealso cref="!:IResponseDecoder"/>
+             <seealso cref="T:ProApiLibrary.Api.Responses.Response`1"/>
+            </remarks>
+            <typeparam name="TD"></typeparam>
+            <typeparam name="TQ"></typeparam>
+        </member>
+        <member name="M:ProApiLibrary.Api.Clients.IDataSource`2.Execute(`1,ProApiLibrary.Api.Clients.Client)">
+            <summary>
+            Transforms the query intermediate form into a raw result
+            </summary>
+            <param name="intermediateForm">The query intermediate form</param>
+            <param name="client">The client performing the request</param>
+            <returns>The raw result</returns>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.IQueryEncoder`2">
+            <summary>
+            Query coders serve to transform/translate a Query into an intermediate
+            form that is compatible with the DataSource. For example, one may change
+            the query into a URI for later execution against an external web service.
+            </summary>
+            <remarks>
+            <p>QueryCoder is part of the ResultFinder pipeline.
+            <seealso cref="!:IResultFinder"/> instances link
+            together the dataflow of the conversion of a
+            <seealso cref="T:ProApiLibrary.Api.Queries.IQuery"/> to a
+            <seealso cref="T:ProApiLibrary.Api.Responses.Response`1"/> via the following steps:</p>
+            <ol>
+                <li>The <seealso cref="T:ProApiLibrary.Api.Queries.IQuery"/> is transformed to an intermediate form via a <seealso cref="!:IQueryEncoder"/>,</li>
+                <li>The intermediate form is used to fetch the raw response from the data source via a <seealso cref="!:IDataSource"/>, and</li>
+                <li>The raw response is transformed into a normalized <seealso cref="T:ProApiLibrary.Api.Responses.Response`1"/> via a <seealso cref="!:IResponseDecoder"/></li>
+            </ol>
+            
+            <seealso cref="!:IResultFinder"/>
+            <seealso cref="!:ResultFinder"/>
+            <seealso cref="!:IQueryEncoder"/>
+            <seealso cref="!:IDataSource"/>
+            <seealso cref="!:IResponseDecoder"/>
+            <seealso cref="T:ProApiLibrary.Api.Responses.Response`1"/>
+            </remarks>
+            <typeparam name="TQ">The query type to encode</typeparam>
+            <typeparam name="TU">The type of the query intermediate form</typeparam>
+        </member>
+        <member name="M:ProApiLibrary.Api.Clients.IQueryEncoder`2.Encode(`0,ProApiLibrary.Api.Clients.Client)">
+            <summary>
+            Transforms the query to an intermediate form
+            </summary>
+            <param name="query">The query</param>
+            <param name="client">The client performing the query</param>
+            <returns>The query intermediate form</returns>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.IResponseDecoder`2">
+            <summary>
+            Response decoders transform the raw response data from a compatible
+            DataSource instance, and return a standardized Response. For example, they
+            may take an InputStream of JSON and parse it into native data objects
+            </summary>
+            <remarks>
+            <p>ResponseDecoder is part of the ResultFinder pipeline.
+            <seealso cref="!:IResultFinder"/> instances link
+            together the dataflow of the conversion of a
+            <seealso cref="T:ProApiLibrary.Api.Queries.IQuery"/> to a
+            <seealso cref="T:ProApiLibrary.Api.Responses.Response`1"/> via the following steps:</p>
+            <ol>
+                <li>The <seealso cref="T:ProApiLibrary.Api.Queries.IQuery"/> is transformed to an intermediate form via a <seealso cref="!:IQueryEncoder"/>,</li>
+                <li>The intermediate form is used to fetch the raw response from the data source via a <seealso cref="!:IDataSource"/>, and</li>
+                <li>The raw response is transformed into a normalized <seealso cref="T:ProApiLibrary.Api.Responses.Response`1"/> via a <seealso cref="!:IResponseDecoder"/></li>
+            </ol>
+            
+            <seealso cref="!:IResultFinder"/>
+            <seealso cref="!:IResultFinder"/>Impl
+            <seealso cref="!:IQueryEncoder"/>
+            <seealso cref="!:IDataSource"/>
+            <seealso cref="T:ProApiLibrary.Api.Responses.Response`1"/>
+            </remarks>
+            <typeparam name="TE">The type of entity you are decoding to.</typeparam>
+            <typeparam name="TV">The raw response from an <seealso cref="T:ProApiLibrary.Api.Clients.IDataSource`2"/> instance</typeparam>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.ResponseDecoders.ProApi20JsonStreamResponseDecoder`2">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+            <typeparam name="TT">The entity class type you are decoding to</typeparam>
+            <typeparam name="TD">The source data type you are decoding from</typeparam>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.QueryEncoders.BusinessQueryToProApi20UriEncoder">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.QueryEncoders.WhereQueryToProApi20UriEncoder`1">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+            <typeparam name="TQ"></typeparam>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.QueryEncoders.QueryToProApi20UriEncoder`1">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+            <typeparam name="TQ"></typeparam>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.QueryEncoders.PhoneQueryToProApi20UriEncoder">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.QueryEncoders.LocationQueryToProApi20UriEncoder">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.QueryEncoders.ProApi20ParamValueFormatter">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.Utils.IParamValueFormatter">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.ResponseDecoders.BusinessProApi20JsonStreamResponseDecoder">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.ResponseDecoders.LocationProApi20JsonStreamResponseDecoder">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.ResponseDecoders.NewtonsoftStreaming.ErrorResponseDecoder">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.ResponseDecoders.NewtonsoftStreaming.LocationResponseDecoder">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.ResponseDecoders.NewtonsoftStreaming.PhoneResponseDecoder">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.ResponseDecoders.PhoneProApi20JsonStreamResponseDecoder">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.ResponseDecoders.NewtonsoftStreaming.EntityConverter">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.ResponseDecoders.NewtonsoftStreaming.PersonResponseDecoder">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.ResponseDecoders.NewtonsoftStreaming.BusinessResponseDecoder">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.Responses.BusinessResponse">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.Responses.ErrorResponse">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.Responses.LocationResponse">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.Responses.PersonResponse">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.QueryEncoders.PersonQueryToProApi20UriEncoder">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.IResultFinder`2">
+            <summary>
+            IResultFinder instances link together the datafolow of the conversion of an IQuery to an Response{T}
+            </summary>
+            <remarks>
+            <seealso cref="T:ProApiLibrary.Api.Clients.ResultFinder`4"/> instances link
+            together the dataflow of the conversion of a
+            <seealso cref="T:ProApiLibrary.Api.Queries.IQuery"/> to a
+            <seealso cref="T:ProApiLibrary.Api.Responses.Response`1"/> via the following steps:
+            <ol>
+                <li>The <seealso cref="T:ProApiLibrary.Api.Queries.IQuery"/> is transformed to an intermediate form via a <seealso cref="!:IQueryEncoder"/>,</li>
+                <li>The intermediate form is used to fetch the raw response from the data source via a <seealso cref="!:IDataSource"/>, and</li>
+                <li>The raw response is transformed into a normalized <seealso cref="T:ProApiLibrary.Api.Responses.Response`1"/> via a <seealso cref="!:IResponseDecoder"/></li>
+            </ol>
+            
+            <seealso cref="!:IResultFinder"/>
+            <seealso cref="!:IResultFinder"/>Impl
+            <seealso cref="!:IQueryEncoder"/>
+            <seealso cref="!:IDataSource"/>
+            <seealso cref="!:IResponseDecoder"/>
+            <seealso cref="T:ProApiLibrary.Api.Responses.Response`1"/>
+            </remarks>
+            <typeparam name="TE"></typeparam>
+            <typeparam name="TQ"></typeparam>
+        </member>
+        <member name="M:ProApiLibrary.Api.Clients.IResultFinder`2.Find(`1,ProApiLibrary.Api.Clients.Client)">
+            <summary>
+            Executes the given Query, returning a Response
+            </summary>
+            <param name="query">The query to perform</param>
+            <param name="client">The client object to use</param>
+            <returns>The Response object</returns>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.ResponseDecoders.PersonProApi20JsonStreamResponseDecoder">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.Responses.PhoneResponse">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.ResultFinderFactory">
+            <summary>
+            A factory for creation of <seealso cref="!:IResultFinder"/> instances
+            </summary>
+            <remarks>
+            <p>ResultFinders require choosing a compatible set of <seealso cref="!:IQueryEncoder"/>, <seealso cref="!:IDataSource"/>, and
+            <seealso cref="!:IResponseDecoder"/> instances in order to function. This factory supplies factory methods for the
+            creation of properly configured ResultFinder instances.</p>
+            
+            <seealso cref="!:IResultFinder"/>
+            </remarks>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.ResultFinder`4">
+            <summary>
+            /// A standardized, generic implementation of <seealso cref="!:IResultFinder"/> that properly
+            threads together the <seealso cref="!:IQueryEncoder"/>, <seealso cref="!:IDataSource"/>, and
+            <seealso cref="!:IResponseDecoder"/> to execute a find request.
+            </summary> 
+            <remarks>
+            <seealso cref="!:IResultFinder"/>
+            </remarks>
+            <typeparam name="TE">The entity type</typeparam>
+            <typeparam name="TQ">The query type</typeparam>
+            <typeparam name="TD">The type of data</typeparam>
+            <typeparam name="TU">The intermediate form</typeparam>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.Utils.HttpResponse">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.Utils.UriEncoder">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Clients.Utils.UriQueryParameters">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Exceptions.AuthException">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Exceptions.ResponseException">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Exceptions.ResponseDecoderException">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Exceptions.FindException">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Exceptions.DataSourceException">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Exceptions.InternalException">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Exceptions.QueryEncoderException">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Exceptions.QuotaExceededException">
+            <summary>
+            Copyright 2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Queries.BusinessQuery">
+            <summary>
+            The root concrete class for all Business queries
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Queries.WhereQuery">
+            <summary>
+            An abstract superclass for all queries that can specify "where" parameters
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Queries.EntityQuery">
+            <summary>
+            An abstract superclass providing common methods for working with entity queries
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Queries.IQuery">
+            <summary>
+            The root type for all Queries. The following concrete Query classes are available for use
+            </summary>
+            <remarks>
+            <![CDATA[
+            <ul>
+                <li><seealso cref="PersonQuery"/></li>
+                <li><seealso cref="BusinessQuery"/></li>
+                <li><seealso cref="PhoneQuery"/></li>
+                <li><seealso cref="PhoneLiteQuery"/></li>
+                <li><seealso cref="LocationQuery"/></li>
+            </ul>
+            
+            <h2>Example Queries</h2>
+            
+            <p>Find a person by name and zip code:</p>
+            <code>
+            public PersonQuery queryByNameAndZip(String firstName, String lastName, String zip) {
+                PersonQuery q = new PersonQuery(firstName, null, lastName);
+                q.setPostalCode(zip);
+                return q;
+            }
+            </code>
+            
+            <p>Find a location by entity id:</p>
+            <code>
+            public LocationQuery queryByLocId(EntityId id) {
+                return new LocationQuery(id);
+            }
+            </code>
+            
+            <p>Find a phone number with a boolean switch between a full and a lite phone query:</p>
+            <code>
+            public PhoneQuery queryPhoneNumber(String number, boolean lite) {
+                return lite ? new PhoneLiteQuery(number) : new PhoneQuery(number);
+            }
+            </code>
+            
+            <seealso cref="PersonQuery"/>
+            <seealso cref="BusinessQuery"/>
+            <seealso cref="PhoneQuery"/>
+            <seealso cref="PhoneLiteQuery"/>
+            <seealso cref="LocationQuery"/>
+            ]]>
+            </remarks>
+        </member>
+        <member name="T:ProApiLibrary.Api.Queries.LocationQuery">
+            <summary>
+            The root concrete class for all Location queries
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Queries.PersonQuery">
+            <summary>
+            The root concrete class for all Person queries
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Queries.PhoneLiteQuery">
+            <summary>
+            The PhoneQuery instance for PhoneLite query construction
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Queries.PhoneQuery">
+            <summary>
+            The root concrete class for all Phone queries
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Responses.Response`1">
+            <summary>
+            The Response is the root object for data returned from queries performed
+            via the <seealso cref="P:ProApiLibrary.Api.Responses.Response`1.Client"/> find methods
+            </summary>
+            <remarks>
+            <![CDATA[
+            <p>The key properties of a Response are:</p>
+            <ul>
+                <li>The results (via this.Results): The list of the <seealso cref="IEntity"/> instances found for the corresponding query,</li>
+                <li>The response messages (via GetResponseMessage()): A collection of <seealso cref="Message"/> instances pertaining to the response; these may include error conditions.</li>
+            </ul>
+            
+            <p>Response success can be determined via the this.IsSuccess and this.IsFailure
+            accessors. In the event of a failure response, the cause of the failure is
+            recorded in the response messages.</p>
+            
+            <seealso cref="Client"/>
+            ]]>
+            </remarks>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="P:ProApiLibrary.Api.Responses.Response`1.Results">
+            <summary>
+            Gets the list of resulting <seealso cref="T:ProApiLibrary.Data.Entities.IEntity"/> instances found
+            </summary>
+            <returns>The list of results</returns>
+        </member>
+        <member name="P:ProApiLibrary.Api.Responses.Response`1.ResponseMessages">
+            <summary>
+            Returns the collection of <seealso cref="T:ProApiLibrary.Data.Messages.Message"/> instances for this response
+            </summary>
+            <remarks>
+            Messages include errors and warnings encountered during execution of the
+            query.
+            
+            @return The response messages.
+            <seealso cref="T:ProApiLibrary.Api.Responses.Response`1"/>Messages
+            <seealso cref="T:ProApiLibrary.Data.Messages.Message"/>
+            </remarks>
+        </member>
+        <member name="P:ProApiLibrary.Api.Responses.Response`1.Client">
+            <summary>
+            Returns the <seealso cref="P:ProApiLibrary.Api.Responses.Response`1.Client"/> instance used to execute the query that generated this 
+            response. This allows follow-up requests with the same configuration
+            </summary>
+            <remarks>
+            <seealso cref="P:ProApiLibrary.Api.Responses.Response`1.Client"/>
+            </remarks>
+            <returns>The client used to execute this query</returns>
+        </member>
+        <member name="P:ProApiLibrary.Api.Responses.Response`1.IsSuccess">
+            <summary>
+            Returns True if this query succeeded
+            </summary>
+        </member>
+        <member name="P:ProApiLibrary.Api.Responses.Response`1.IsFailure">
+            <summary>
+            Returns True if this query failed
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Api.Responses.ResponseMessages">
+            <summary>
+            Encapsulates a list of <seealso cref="T:ProApiLibrary.Data.Messages.Message"/> instances in order to provide methods
+            for common operations.
+            </summary>
+            <seealso cref="T:ProApiLibrary.Api.Responses.Response`1"/>
+            <seealso cref="T:ProApiLibrary.Data.Messages.Message"/>
+        </member>
+        <member name="M:ProApiLibrary.Api.Responses.ResponseMessages.GetMessageList(ProApiLibrary.Data.Messages.Message.MessageSeverity)">
+            <summary>
+            Accessor for retrieving the list of messages
+            </summary>
+            <remarks>
+            One should prefer using methods on the ResponseMessages object,
+            when availabile. For example, rather than calling
+            
+            <code>response.getResponseMessages().getMessageList().get(0)</code>
+            
+            one should call
+            
+            <code>response.getResponseMessages().get(0)</code> instead.
+            </remarks>
+            <returns>The messages in this collection as an IEnumerable{Message}</returns>
+            <param name="severity"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ProApiLibrary.Data.Associations.Association">
+            <summary>
+            The root interface for all Associations
+            </summary>
+            <remarks>
+            (e.g. <seealso cref="T:ProApiLibrary.Data.Associations.PersonAssociation"/>, <seealso cref="T:ProApiLibrary.Data.Associations.BusinessAssociation"/>,
+            <seealso cref="T:ProApiLibrary.Data.Associations.PhoneAssociation"/>, and <seealso cref="T:ProApiLibrary.Data.Associations.LocationAssociation"/>).
+            
+            The Whitepages API presents its data in a directed graph form, whereby:
+            <ul>
+                <li>Each node is an <seealso cref="T:ProApiLibrary.Data.Entities.IEntity"/>, and</li>
+                <li>Each edge is an <seealso cref="T:ProApiLibrary.Data.Associations.Association"/>.</li>
+            </ul>
+            
+            Entities contain data intrinsic to the entity, whereas associations
+            contain data pertaining to the relationship between its source and destination
+            entities.
+            
+            Associations are a directed edge from a source entity node to
+            a destination entity node. Since traversal starts from the source
+            entity, there is only one accessor on
+            the Assocation instance, which leads to the destination entity.
+            
+            <seealso cref="T:ProApiLibrary.Data.Entities.IEntity"/>
+            <seealso cref="T:ProApiLibrary.Data.Associations.PersonAssociation"/>
+            <seealso cref="T:ProApiLibrary.Data.Associations.BusinessAssociation"/>
+            <seealso cref="T:ProApiLibrary.Data.Associations.PhoneAssociation"/>
+            <seealso cref="T:ProApiLibrary.Data.Associations.LocationAssociation"/>
+            </remarks>
+        </member>
+        <member name="P:ProApiLibrary.Data.Associations.Association.Entity">
+            <summary>
+            Returns the associated entity in a way that is generic across all
+            Association types
+            </summary>
+            <remarks>
+            For strongly typed accessors, see
+            <seealso cref="T:ProApiLibrary.Data.Associations.PersonAssociation"/>.Person,
+            <seealso cref="T:ProApiLibrary.Data.Associations.BusinessAssociation"/>.Business,
+            <seealso cref="T:ProApiLibrary.Data.Associations.PhoneAssociation"/>.Phone, and
+            <seealso cref="T:ProApiLibrary.Data.Associations.LocationAssociation"/>.Location.
+            
+            @return
+            
+            <seealso cref="T:ProApiLibrary.Data.Associations.PersonAssociation"/>
+            <seealso cref="T:ProApiLibrary.Data.Associations.BusinessAssociation"/>
+            <seealso cref="T:ProApiLibrary.Data.Associations.PhoneAssociation"/>
+            <seealso cref="T:ProApiLibrary.Data.Associations.LocationAssociation"/>
+            </remarks>
+        </member>
+        <member name="T:ProApiLibrary.Data.Associations.BusinessAssociation">
+            <summary>
+            The <seealso cref="T:ProApiLibrary.Data.Entities.IBusiness"/> type specific <seealso cref="T:ProApiLibrary.Data.Associations.Association"/>
+            </summary>
+            <seealso cref="T:ProApiLibrary.Data.Entities.IBusiness"/>
+            <seealso cref="T:ProApiLibrary.Data.Associations.Association"/>
+        </member>
+        <member name="T:ProApiLibrary.Data.Associations.LegalEntityAssociation">
+            <summary>
+            /// Common superclass of <seealso cref="T:ProApiLibrary.Data.Associations.PhoneAssociation"/> and <seealso cref="T:ProApiLibrary.Data.Associations.BusinessAssociation"/>; useful
+            for Liskov substitution of these entities.
+            <seealso cref="T:ProApiLibrary.Data.Entities.ILegalEntity"/>
+            <seealso cref="T:ProApiLibrary.Data.Associations.Association"/>
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Data.Associations.SerializableAssociation">
+            <summary>
+            A class used internally for deserializing results
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Data.Associations.PersonAssociation">
+            <summary>
+            The <seealso cref="T:ProApiLibrary.Data.Entities.IPerson"/> type specific <seealso cref="T:ProApiLibrary.Data.Associations.Association"/>
+            </summary>
+            <seealso cref="T:ProApiLibrary.Data.Entities.IPerson"/>
+            <seealso cref="T:ProApiLibrary.Data.Associations.Association"/>
+        </member>
+        <member name="T:ProApiLibrary.Data.Associations.PhoneAssociation">
+            <summary>
+            The <seealso cref="T:ProApiLibrary.Data.Entities.IPhone"/> type specific <seealso cref="T:ProApiLibrary.Data.Associations.Association"/>
+            </summary>
+            <remarks>
+            <p>This class also adds accessors for the contact type of the location.</p>
+            
+            <seealso cref="T:ProApiLibrary.Data.Entities.IPhone"/>
+            <seealso cref="T:ProApiLibrary.Data.Associations.Association"/>
+            </remarks>
+        </member>
+        <member name="T:ProApiLibrary.Data.Associations.IContactTyped">
+            <summary>
+            Copyright @2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Data.Associations.LocationAssociation">
+            <summary>
+            The <seealso cref="T:ProApiLibrary.Data.Entities.ILocation"/> type specific <seealso cref="T:ProApiLibrary.Data.Associations.Association"/>
+            </summary>
+            <remarks>
+            This class also adds accessors for the contact type of the location.
+            
+            <seealso cref="P:ProApiLibrary.Data.Associations.LocationAssociation.Location"/>
+            <seealso cref="T:ProApiLibrary.Data.Associations.Association"/>
+            </remarks>
+        </member>
+        <member name="T:ProApiLibrary.Data.Entities.BaseEntity">
+            <summary>
+            Abstract class for implementation of common behaviors between all
+            <seealso cref="T:ProApiLibrary.Data.Entities.IEntity"/> types
+            </summary>
+            <seealso cref="T:ProApiLibrary.Data.Entities.IEntity"/>
+        </member>
+        <member name="T:ProApiLibrary.Data.Entities.Business">
+            <summary>
+            The standard concrete implementation of the <seealso cref="T:ProApiLibrary.Data.Entities.IBusiness"/> <seealso cref="T:ProApiLibrary.Data.Entities.IEntity"/>
+            <seealso cref="T:ProApiLibrary.Data.Entities.IBusiness"/>
+            <seealso cref="T:ProApiLibrary.Data.Entities.IEntity"/>
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Data.Entities.LegalEntity">
+            <summary>
+            Copyright @2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Data.Entities.ReputationDetails">
+            <summary>
+            Copyright @2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Data.Entities.EntityId">
+            <summary>
+            The data class encapsulating <seealso cref="T:ProApiLibrary.Data.Entities.IEntity"/> IDs.
+            </summary>
+            <remarks>
+            In addition to being used as an opaque ID, this class
+            presents methods for extracting metadata about the ID.
+            
+            <seealso cref="T:ProApiLibrary.Data.Entities.IEntity"/>
+            </remarks>
+        </member>
+        <member name="T:ProApiLibrary.Data.Entities.LineType">
+            <summary>
+            Copyright @2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Data.Entities.LatLong">
+            <summary>
+            Copyright @2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Data.Entities.Location">
+            <summary>
+            /// The standard concrete implementation of the <seealso cref="T:ProApiLibrary.Data.Entities.Location"/> <seealso cref="T:ProApiLibrary.Data.Entities.IEntity"/>.
+            </summary>
+            <remarks>
+            <seealso cref="T:ProApiLibrary.Data.Entities.Location"/>
+            <seealso cref="T:ProApiLibrary.Data.Entities.IEntity"/>
+            </remarks>
+        </member>
+        <member name="T:ProApiLibrary.Data.Entities.TimePeriod">
+            <summary>
+            Copyright @2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Data.Entities.Name">
+            <summary>
+            Copyright @2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Data.Entities.Person">
+            <summary>
+            The standard concrete implementation of the <seealso cref="T:ProApiLibrary.Data.Entities.IPerson"/> <seealso cref="T:ProApiLibrary.Data.Entities.IEntity"/>
+            </summary>
+            <remarks>
+            <seealso cref="T:ProApiLibrary.Data.Entities.IPerson"/>
+            <seealso cref="T:ProApiLibrary.Data.Entities.IEntity"/>
+            </remarks>
+        </member>
+        <member name="T:ProApiLibrary.Data.Entities.PersonType">
+            <summary>
+            Copyright @2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Data.Entities.Phone">
+            <summary>
+            The standard concrete implementation of the <seealso cref="T:ProApiLibrary.Data.Entities.IPhone"/> <seealso cref="T:ProApiLibrary.Data.Entities.IEntity"/>
+            </summary>
+            <remarks>
+            <seealso cref="T:ProApiLibrary.Data.Entities.IPhone"/>
+            <seealso cref="T:ProApiLibrary.Data.Entities.IEntity"/>
+            </remarks>
+        </member>
+        <member name="T:ProApiLibrary.Data.Entities.Reputation">
+            <summary>
+            Copyright @2015 Whitepages, Inc.
+            </summary>
+        </member>
+        <member name="T:ProApiLibrary.Data.Messages.Message">
+            <summary>
+            Messages are generated as a result of requests to the API and contain both
+            a message body and meta data about that message
+            </summary>
+            <remarks>
+            
+            <p>Messages are found on the <seealso cref="T:ProApiLibrary.Api.Responses.Response`1"/>
+            via the GetResponseMessages() accessor method.</p>
+            
+            <p>Messages have a number of meta-data properties, including:</p>
+            <ul>
+                <li>Severity: the severity of the message,</li>
+                <li>Type: the machine readable categorization of the message,,</li>
+                <li>Code: An optional machine readable sub-categorization coding of the message, and</li>
+                <li>Ancillary Data: An optional weakly-typed Map of data specific to the message.</li>
+            </ul>
+            
+            <seealso cref="T:ProApiLibrary.Api.Responses.Response`1"/>
+            <seealso cref="T:ProApiLibrary.Api.Responses.Response`1"/>Messages
+            </remarks>
+        </member>
+    </members>
+</doc>
